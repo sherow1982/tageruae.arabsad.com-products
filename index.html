@@ -8,18 +8,53 @@
 <style>
 body { font-family: 'Tajawal', sans-serif; background-color: #f9fafb; margin:0; padding:0; }
 h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
-.grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap:20px; padding:20px; }
-.card { background:#fff; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); transition: transform 0.2s; display:flex; flex-direction:column; }
+#products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+.card {
+  background:#fff;
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+  display:flex;
+  flex-direction:column;
+}
 .card:hover { transform: scale(1.03); }
-.card img { width:100%; height:200px; object-fit:cover; border-radius:10px 10px 0 0; cursor:pointer; }
-.card-content { padding:10px; display:flex; flex-direction:column; justify-content:space-between; flex-grow:1; }
+.card img {
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  border-radius:10px 10px 0 0;
+  cursor:pointer;
+}
+.card-content {
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  flex-grow:1;
+}
 .title { font-weight:bold; font-size:1rem; color:#444; text-align:center; margin-bottom:5px; }
 .price-old { color:red; text-decoration:line-through; text-align:center; font-size:0.9rem; }
 .price-new { color:green; font-weight:bold; text-align:center; font-size:1.2rem; margin-bottom:5px; }
-.btn { background:#007bff; color:#fff; text-align:center; padding:8px; border-radius:6px; font-weight:bold; text-decoration:none; margin-top:auto; display:block; transition:0.2s; }
+.btn {
+  background:#007bff;
+  color:#fff;
+  text-align:center;
+  padding:8px;
+  border-radius:6px;
+  font-weight:bold;
+  text-decoration:none;
+  margin-top:auto;
+  display:block;
+  transition:0.2s;
+}
 .btn:hover { background:#0056b3; }
-@media (max-width:768px){.card img{height:180px;}}
-@media (max-width:480px){.card img{height:150px;}.title{font-size:0.9rem;}.price-new{font-size:1rem;}}
+@media (max-width:768px){ .card img{height:180px;} }
+@media (max-width:480px){ .card img{height:150px;} .title{font-size:0.9rem;} .price-new{font-size:1rem;} }
 </style>
 </head>
 <body>
@@ -52,7 +87,6 @@ async function loadProducts() {
       const card = document.createElement("div");
       card.className = "card";
 
-      // الصورة قابلة للنقر
       const aImg = document.createElement("a");
       aImg.href = link;
       aImg.target="_blank";
