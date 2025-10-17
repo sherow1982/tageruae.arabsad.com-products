@@ -46,7 +46,7 @@ async function loadProducts() {
     const jsonData = await res.json();
     const data = JSON.parse(jsonData.contents);
     const container = document.getElementById("products");
-    container.innerHTML = ""; // مسح رسالة التحميل
+    container.innerHTML = "";
 
     data.items.forEach(item => {
       const card = document.createElement("div");
