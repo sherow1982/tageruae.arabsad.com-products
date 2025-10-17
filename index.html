@@ -47,11 +47,9 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
 
 .title { font-weight:bold; font-size:1rem; color:#444; text-align:center; margin-bottom:5px; }
 
-/* سعر نابض */
-@keyframes pulsePrice { 0% { transform: scale(1); color: #006400; } 50% { transform: scale(1.2); color: #8B0000; } 100% { transform: scale(1); color: #006400; } }
-.price-new { font-weight:bold; text-align:center; font-size:1.2rem; margin-bottom:5px; animation: pulsePrice 1s infinite; }
+.price-fixed { font-weight:bold; text-align:center; font-size:1.2rem; color:#006400; margin-bottom:5px; }
 
-.btn { text-align:center; padding:6px; border-radius:6px; font-weight:bold; text-decoration:none; display:block; margin-top:5px; background: #00BFFF; color:#fff; transition:0.3s; }
+.btn { text-align:center; padding:8px; border-radius:8px; font-weight:bold; text-decoration:none; display:block; margin-top:5px; background: #00BFFF; color:#fff; transition:0.3s; }
 .btn:hover { background:#009ACD; }
 
 /* WhatsApp floating button */
@@ -59,8 +57,8 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
 #whatsapp-btn:hover { transform: scale(1.1); box-shadow:0 8px 20px rgba(0,0,0,0.3); }
 #whatsapp-btn svg { width:20px; height:20px; fill:#25D366; margin-left:5px; }
 
-@media (max-width:768px){ .card img{max-height:200px;} .price-new{font-size:1.1rem;} }
-@media (max-width:480px){ .card img{max-height:150px;} .title{font-size:0.9rem;} .price-new{font-size:1rem;} }
+@media (max-width:768px){ .card img{max-height:200px;} .price-fixed{font-size:1.1rem;} }
+@media (max-width:480px){ .card img{max-height:150px;} .title{font-size:0.9rem;} .price-fixed{font-size:1rem;} }
 </style>
 </head>
 <body>
@@ -90,6 +88,8 @@ async function loadProducts() {
     const container = document.getElementById("products");
     container.innerHTML = "";
 
+    let jsonLDProducts = [];
+
     items.forEach(item=>{
       const title = cleanText(item.querySelector("title")?.textContent) || "منتج بدون اسم";
       const link = item.querySelector("link")?.textContent || "#";
@@ -118,7 +118,7 @@ async function loadProducts() {
       t.textContent=title;
 
       const pNew = document.createElement("div");
-      pNew.className="price-new";
+      pNew.className="price-fixed";
       pNew.textContent=priceAfter + " درهم";
 
       const btn = document.createElement("a");
@@ -133,8 +133,44 @@ async function loadProducts() {
 
       card.appendChild(content);
       container.appendChild(card);
+
+      // JSON-LD لكل منتج
+      jsonLDProducts.push({
+        "@type":"Product",
+        "name": title,
+        "image": image,
+        "offers": {
+          "@type":"Offer",
+          "priceCurrency":"AED",
+          "price": priceAfter,
+          "url": link,
+          "availability":"https://schema.org/InStock"
+        }
+      });
     });
+
+    // إضافة JSON-LD لتحسين SEO
+    const scriptLD = document.createElement("script");
+    scriptLD.type="application/ld+json";
+    scriptLD.text = JSON.stringify({
+      "@context":"https://schema.org",
+      "@type":"ItemList",
+      "itemListElement": jsonLDProducts.map((prod,i)=>({
+        "@type":"ListItem",
+        "position":i+1,
+        "item":prod
+      }))
+    });
+    document.head.appendChild(scriptLD);
 
   } catch(err){
     console.error(err);
-    document
+    document.getElementById("products").innerHTML="<p class='text-center text-red-500'>فشل تحميل المنتجات من الفييد مباشرة.</p>";
+  }
+}
+
+loadProducts();
+</script>
+
+</body>
+</html>
