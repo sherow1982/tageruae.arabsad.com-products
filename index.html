@@ -21,7 +21,6 @@
 <meta name="twitter:description" content="تصفح منتجات تاجر الإمارات مباشرة من EasyOrders">
 <meta name="twitter:image" content="رابط_صورة_افتراضية_او_شعار.png">
 
-<!-- TailwindCSS -->
 <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
@@ -74,72 +73,51 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
 </a>
 
 <script>
-const FEED_URL = "https://api.easy-orders.net/api/v1/products/feed/437a38bb829245a3934e1d2fe153b417/channel/google";
+const FEED_URL="https://api.easy-orders.net/api/v1/products/feed/437a38bb829245a3934e1d2fe153b417/channel/google";
 
-function cleanText(text) { if (!text) return ""; return text.replace(/[*•\-\u00A0]/g,"").trim(); }
+function cleanText(text){return text? text.replace(/[*•\-\u00A0]/g,"").trim() : "";}
 
-async function loadProducts() {
-  try {
-    const res = await fetch(FEED_URL);
-    const text = await res.text();
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(text, "application/xml");
-    const items = xml.querySelectorAll("item");
-    const container = document.getElementById("products");
-    container.innerHTML = "";
+async function loadProducts(){
+  try{
+    const res=await fetch(FEED_URL);
+    const text=await res.text();
+    const parser=new DOMParser();
+    const xml=parser.parseFromString(text,"application/xml");
+    const items=xml.querySelectorAll("item");
+    const container=document.getElementById("products");
+    container.innerHTML="";
 
-    let jsonLDProducts = [];
+    const fragment=document.createDocumentFragment();
+    const jsonLDProducts=[];
 
-    items.forEach(item=>{
-      const title = cleanText(item.querySelector("title")?.textContent) || "منتج بدون اسم";
-      const link = item.querySelector("link")?.textContent || "#";
-      const image = item.querySelector("g\\:image_link, image_link")?.textContent || "";
-      const priceAfter = parseFloat((item.querySelector("g\\:price, price")?.textContent || "0").replace(/[^\d.]/g,"")) || 0;
+    items.forEach((item,i)=>{
+      const title=cleanText(item.querySelector("title")?.textContent)||"منتج بدون اسم";
+      const link=item.querySelector("link")?.textContent||"#";
+      const image=item.querySelector("g\\:image_link, image_link")?.textContent||"";
+      const priceAfter=parseFloat((item.querySelector("g\\:price, price")?.textContent||"0").replace(/[^\d.]/g,""))||0;
 
-      const card = document.createElement("div");
-      card.className = "card";
+      const card=document.createElement("div"); card.className="card";
 
-      const aImg = document.createElement("a");
-      aImg.href = link;
-      aImg.target="_blank";
-      const img = document.createElement("img");
-      img.src = image;
-      img.alt = title;
-      img.loading="lazy";
-      img.addEventListener('load',()=>{ img.classList.add('loaded'); });
+      const aImg=document.createElement("a"); aImg.href=link; aImg.target="_blank";
+      const img=document.createElement("img"); img.src=image; img.alt=title; img.loading="lazy";
+      img.addEventListener('load',()=>img.classList.add('loaded'));
       aImg.appendChild(img);
       card.appendChild(aImg);
 
-      const content = document.createElement("div");
-      content.className="card-content";
+      const content=document.createElement("div"); content.className="card-content";
+      const t=document.createElement("div"); t.className="title"; t.textContent=title;
+      const pNew=document.createElement("div"); pNew.className="price-fixed"; pNew.textContent=priceAfter+" درهم";
+      const btn=document.createElement("a"); btn.className="btn"; btn.href=link; btn.target="_blank"; btn.textContent="اشترِ الآن";
 
-      const t = document.createElement("div");
-      t.className="title";
-      t.textContent=title;
-
-      const pNew = document.createElement("div");
-      pNew.className="price-fixed";
-      pNew.textContent=priceAfter + " درهم";
-
-      const btn = document.createElement("a");
-      btn.className="btn";
-      btn.href=link;
-      btn.target="_blank";
-      btn.textContent="اشترِ الآن";
-
-      content.appendChild(t);
-      content.appendChild(pNew);
-      content.appendChild(btn);
-
+      content.appendChild(t); content.appendChild(pNew); content.appendChild(btn);
       card.appendChild(content);
-      container.appendChild(card);
+      fragment.appendChild(card);
 
-      // JSON-LD لكل منتج
       jsonLDProducts.push({
         "@type":"Product",
         "name": title,
         "image": image,
-        "offers": {
+        "offers":{
           "@type":"Offer",
           "priceCurrency":"AED",
           "price": priceAfter,
@@ -149,21 +127,19 @@ async function loadProducts() {
       });
     });
 
-    // إضافة JSON-LD لتحسين SEO
-    const scriptLD = document.createElement("script");
+    container.appendChild(fragment);
+
+    // JSON-LD SEO
+    const scriptLD=document.createElement("script");
     scriptLD.type="application/ld+json";
-    scriptLD.text = JSON.stringify({
+    scriptLD.text=JSON.stringify({
       "@context":"https://schema.org",
       "@type":"ItemList",
-      "itemListElement": jsonLDProducts.map((prod,i)=>({
-        "@type":"ListItem",
-        "position":i+1,
-        "item":prod
-      }))
+      "itemListElement":jsonLDProducts.map((prod,i)=>({"@type":"ListItem","position":i+1,"item":prod}))
     });
     document.head.appendChild(scriptLD);
 
-  } catch(err){
+  }catch(err){
     console.error(err);
     document.getElementById("products").innerHTML="<p class='text-center text-red-500'>فشل تحميل المنتجات من الفييد مباشرة.</p>";
   }
