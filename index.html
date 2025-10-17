@@ -7,95 +7,91 @@
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <style>
 body { font-family: 'Tajawal', sans-serif; background-color: #f9fafb; margin:0; padding:0; }
-h1 { margin-top:20px; margin-bottom:20px; color:#1D4ED8; text-align:center; font-size:2rem; }
+h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
 .grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap:20px; padding:20px; }
-.card { background:#fff; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); display:flex; flex-direction:column; transition: transform 0.2s; }
+.card { background:#fff; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); transition: transform 0.2s; display:flex; flex-direction:column; }
 .card:hover { transform: scale(1.05); }
 .card img { width:100%; height:200px; object-fit:cover; border-radius:10px 10px 0 0; cursor:pointer; }
-.card-content { padding:10px; flex-grow:1; display:flex; flex-direction:column; justify-content:space-between; }
-.title { font-weight:bold; color:#444; margin-bottom:5px; font-size:1rem; text-align:center; }
-.price-old { color:red; text-decoration:line-through; font-size:0.9rem; text-align:center; }
-.price-new { color:green; font-weight:bold; font-size:1.2rem; margin-bottom:5px; text-align:center; }
-.btn { background:#007bff; color:#fff; padding:8px; border-radius:6px; text-align:center; text-decoration:none; margin-top:auto; transition:0.2s; display:block; font-weight:bold; }
+.card-content { padding:10px; display:flex; flex-direction:column; justify-content:space-between; flex-grow:1; }
+.title { font-weight:bold; font-size:1rem; color:#444; text-align:center; margin-bottom:5px; }
+.price-old { color:red; text-decoration:line-through; text-align:center; font-size:0.9rem; }
+.price-new { color:green; font-weight:bold; text-align:center; font-size:1.2rem; margin-bottom:5px; }
+.btn { background:#007bff; color:#fff; text-align:center; padding:8px; border-radius:6px; font-weight:bold; text-decoration:none; margin-top:auto; display:block; transition:0.2s; }
 .btn:hover { background:#0056b3; }
-.loading { text-align:center; color:#444; font-size:1.2rem; margin-top:40px; }
-@media (max-width: 768px) {
-  .card img { height:180px; }
-}
-@media (max-width: 480px) {
-  .card img { height:150px; }
-  .title { font-size:0.9rem; }
-  .price-new { font-size:1rem; }
-}
+@media (max-width:768px){.card img{height:180px;}}
+@media (max-width:480px){.card img{height:150px;}.title{font-size:0.9rem;}.price-new{font-size:1rem;}}
 </style>
 </head>
 <body>
 
 <h1>منتجات تاجر الإمارات</h1>
-<div id="products">
-  <p class="loading">جاري تحميل المنتجات...</p>
-</div>
+<div id="products"><p class="text-center">جاري تحميل المنتجات...</p></div>
 
 <script>
-const FEED_URL = "https://api.easy-orders.net/api/v1/products/feed/437a38bb829245a3934e1d2fe153b417/channel/meta";
-const PROXY = "https://api.allorigins.win/get?url=" + encodeURIComponent(FEED_URL);
+const FEED_URL = "https://api.easy-orders.net/api/v1/products/feed/437a38bb829245a3934e1d2fe153b417/channel/google";
 
 async function loadProducts() {
   try {
-    const res = await fetch(PROXY);
-    const jsonData = await res.json();
-    const data = JSON.parse(jsonData.contents);
+    const res = await fetch(FEED_URL);
+    const text = await res.text();
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, "application/xml");
+    const items = xml.querySelectorAll("item");
     const container = document.getElementById("products");
     container.innerHTML = "";
 
-    data.items.forEach(item => {
+    items.forEach(item=>{
+      const title = item.querySelector("title")?.textContent || "منتج بدون اسم";
+      const link = item.querySelector("link")?.textContent || "#";
+      const image = item.querySelector("g\\:image_link, image_link")?.textContent || "";
+      const priceStr = item.querySelector("g\\:price, price")?.textContent || "0";
+      const price = parseFloat(priceStr.replace(/[^\d.]/g,"")) || 0;
+
       const card = document.createElement("div");
       card.className = "card";
 
-      const link = document.createElement("a");
-      link.href = item.link;
-      link.target = "_blank";
-
+      const aImg = document.createElement("a");
+      aImg.href = link;
+      aImg.target="_blank";
       const img = document.createElement("img");
-      img.src = item.image_link || item.image || "";
-      img.alt = item.title;
-      img.loading = "lazy";
-
-      link.appendChild(img);
-      card.appendChild(link);
+      img.src = image;
+      img.alt = title;
+      img.loading="lazy";
+      aImg.appendChild(img);
+      card.appendChild(aImg);
 
       const content = document.createElement("div");
-      content.className = "card-content";
+      content.className="card-content";
 
-      const title = document.createElement("div");
-      title.className = "title";
-      title.textContent = item.title;
+      const t = document.createElement("div");
+      t.className="title";
+      t.textContent=title;
 
-      const priceOld = document.createElement("div");
-      priceOld.className = "price-old";
-      priceOld.textContent = item.price ? item.price + " درهم" : "";
+      const pOld = document.createElement("div");
+      pOld.className="price-old";
+      pOld.textContent=price+" درهم";
 
-      const priceNew = document.createElement("div");
-      priceNew.className = "price-new";
-      priceNew.textContent = item.sale_price ? item.sale_price + " درهم" : item.price + " درهم";
+      const pNew = document.createElement("div");
+      pNew.className="price-new";
+      pNew.textContent=price+" درهم";
 
       const btn = document.createElement("a");
-      btn.className = "btn";
-      btn.href = item.link;
-      btn.target = "_blank";
-      btn.textContent = "اشترِ الآن";
+      btn.className="btn";
+      btn.href=link;
+      btn.target="_blank";
+      btn.textContent="اشترِ الآن";
 
-      content.appendChild(title);
-      content.appendChild(priceOld);
-      content.appendChild(priceNew);
+      content.appendChild(t);
+      content.appendChild(pOld);
+      content.appendChild(pNew);
       content.appendChild(btn);
 
       card.appendChild(content);
       container.appendChild(card);
     });
-  } catch (err) {
-    console.error("خطأ في تحميل المنتجات:", err);
-    document.getElementById("products").innerHTML = "<p class='text-center text-red-500'>حدث خطأ في تحميل المنتجات. حاول تحديث الصفحة.</p>";
+  } catch(err){
+    console.error(err);
+    document.getElementById("products").innerHTML="<p class='text-center text-red-500'>فشل تحميل المنتجات من الفييد مباشرة.</p>";
   }
 }
 
