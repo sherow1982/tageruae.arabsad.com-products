@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>منتجات Tager AlEmarat</title>
+<title>منتجات تاجر الإمارات</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <style>
@@ -26,7 +26,7 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
 .card img {
   width:100%;
   height:auto;
-  max-height:200px;
+  max-height:250px;
   object-fit:contain;
   border-radius:10px 10px 0 0;
   cursor:pointer;
@@ -45,15 +45,15 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
   background:#007bff; color:#fff; text-align:center; padding:6px; border-radius:6px; font-weight:bold; text-decoration:none; display:block; margin-top:5px; transition:0.2s;
 }
 .btn:hover, .btn-more:hover { background:#0056b3; }
-@media (max-width:768px){ .card img{max-height:180px;} .price-new{font-size:1.1rem;} }
+@media (max-width:768px){ .card img{max-height:200px;} .price-new{font-size:1.1rem;} }
 @media (max-width:480px){ .card img{max-height:150px;} .title{font-size:0.9rem;} .price-new{font-size:1rem;} }
 </style>
 </head>
 <body>
 
-<h1>منتجات Tager AlEmarat</h1>
+<h1>منتجات تاجر الإمارات</h1>
 <div id="products">
-  <p class="text-center text-gray-500">Loading products...</p>
+  <p class="text-center text-gray-500">جاري تحميل المنتجات...</p>
 </div>
 
 <script>
@@ -70,7 +70,7 @@ async function loadProducts() {
     container.innerHTML = "";
 
     items.forEach(item=>{
-      const title = item.querySelector("title")?.textContent || "No Name";
+      const title = item.querySelector("title")?.textContent || "منتج بدون اسم";
       const link = item.querySelector("link")?.textContent || "#";
       const image = item.querySelector("g\\:image_link, image_link")?.textContent || "";
       const priceAfter = parseFloat((item.querySelector("g\\:price, price")?.textContent || "0").replace(/[^\d.]/g,"")) || 0;
@@ -103,28 +103,28 @@ async function loadProducts() {
       const btnMore = document.createElement("a");
       btnMore.className="btn-more";
       btnMore.href="javascript:void(0)";
-      btnMore.textContent="Show More";
+      btnMore.textContent="عرض المزيد";
       btnMore.addEventListener("click",()=>{
         if(d.style.webkitLineClamp === "2" || !d.style.webkitLineClamp) {
           d.style.display = "block";
           d.style.webkitLineClamp = "unset";
-          btnMore.textContent="Show Less";
+          btnMore.textContent="عرض أقل";
         } else {
           d.style.display = "-webkit-box";
           d.style.webkitLineClamp = "2";
-          btnMore.textContent="Show More";
+          btnMore.textContent="عرض المزيد";
         }
       });
 
       const pNew = document.createElement("div");
       pNew.className="price-new";
-      pNew.textContent=priceAfter + " AED";
+      pNew.textContent=priceAfter + " درهم";
 
       const btn = document.createElement("a");
       btn.className="btn";
       btn.href=link;
       btn.target="_blank";
-      btn.textContent="Buy Now";
+      btn.textContent="اشترِ الآن";
 
       content.appendChild(t);
       content.appendChild(d);
@@ -138,7 +138,7 @@ async function loadProducts() {
 
   } catch(err){
     console.error(err);
-    document.getElementById("products").innerHTML="<p class='text-center text-red-500'>Failed to load products from feed.</p>";
+    document.getElementById("products").innerHTML="<p class='text-center text-red-500'>فشل تحميل المنتجات من الفييد مباشرة.</p>";
   }
 }
 
