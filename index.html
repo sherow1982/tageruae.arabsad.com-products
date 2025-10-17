@@ -107,9 +107,14 @@ async function loadProducts(){
 
 loadProducts();
 
-// بحث ديناميكي
+// بحث ديناميكي مع تسليط الضوء
 const searchInput=document.getElementById("search");
 const searchResults=document.getElementById("search-results");
+
+function highlightMatch(text, query){
+  const regex = new RegExp(`(${query})`, "gi");
+  return text.replace(regex, "<span style='background:#00BFFF;color:#fff;font-weight:bold;'>$1</span>");
+}
 
 searchInput.addEventListener("input",()=>{
   const val=searchInput.value.trim().toLowerCase();
@@ -119,7 +124,10 @@ searchInput.addEventListener("input",()=>{
   const matched=productsData.filter(p=>p.title.toLowerCase().includes(val)).slice(0,10);
   if(matched.length>0){
     matched.forEach(p=>{
-      const a=document.createElement("a"); a.href=p.link; a.target="_blank"; a.textContent=p.title;
+      const a=document.createElement("a"); 
+      a.href=p.link; 
+      a.target="_blank"; 
+      a.innerHTML=highlightMatch(p.title, val);
       searchResults.appendChild(a);
     });
     searchResults.style.display="block";
