@@ -10,7 +10,7 @@ body { font-family: 'Tajawal', sans-serif; background-color: #f9fafb; margin:0; 
 h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
 .grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap:20px; padding:20px; }
 .card { background:#fff; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); transition: transform 0.2s; display:flex; flex-direction:column; }
-.card:hover { transform: scale(1.05); }
+.card:hover { transform: scale(1.03); }
 .card img { width:100%; height:200px; object-fit:cover; border-radius:10px 10px 0 0; cursor:pointer; }
 .card-content { padding:10px; display:flex; flex-direction:column; justify-content:space-between; flex-grow:1; }
 .title { font-weight:bold; font-size:1rem; color:#444; text-align:center; margin-bottom:5px; }
@@ -25,7 +25,9 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
 <body>
 
 <h1>منتجات تاجر الإمارات</h1>
-<div id="products"><p class="text-center">جاري تحميل المنتجات...</p></div>
+<div id="products">
+  <p class="text-center text-gray-500">جاري تحميل المنتجات...</p>
+</div>
 
 <script>
 const FEED_URL = "https://api.easy-orders.net/api/v1/products/feed/437a38bb829245a3934e1d2fe153b417/channel/google";
@@ -44,12 +46,13 @@ async function loadProducts() {
       const title = item.querySelector("title")?.textContent || "منتج بدون اسم";
       const link = item.querySelector("link")?.textContent || "#";
       const image = item.querySelector("g\\:image_link, image_link")?.textContent || "";
-      const priceStr = item.querySelector("g\\:price, price")?.textContent || "0";
-      const price = parseFloat(priceStr.replace(/[^\d.]/g,"")) || 0;
+      const priceBefore = parseFloat((item.querySelector("g\\:sale_price, g\\:price, price")?.textContent || "0").replace(/[^\d.]/g,"")) || 0;
+      const priceAfter = parseFloat((item.querySelector("g\\:price, price")?.textContent || "0").replace(/[^\d.]/g,"")) || priceBefore;
 
       const card = document.createElement("div");
       card.className = "card";
 
+      // الصورة قابلة للنقر
       const aImg = document.createElement("a");
       aImg.href = link;
       aImg.target="_blank";
@@ -69,11 +72,11 @@ async function loadProducts() {
 
       const pOld = document.createElement("div");
       pOld.className="price-old";
-      pOld.textContent=price+" درهم";
+      pOld.textContent=priceBefore + " درهم";
 
       const pNew = document.createElement("div");
       pNew.className="price-new";
-      pNew.textContent=price+" درهم";
+      pNew.textContent=priceAfter + " درهم";
 
       const btn = document.createElement("a");
       btn.className="btn";
@@ -89,6 +92,7 @@ async function loadProducts() {
       card.appendChild(content);
       container.appendChild(card);
     });
+
   } catch(err){
     console.error(err);
     document.getElementById("products").innerHTML="<p class='text-center text-red-500'>فشل تحميل المنتجات من الفييد مباشرة.</p>";
