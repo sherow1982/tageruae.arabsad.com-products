@@ -31,7 +31,7 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
 .card-content { padding:10px; display:flex; flex-direction:column; justify-content:flex-start; flex-grow:1; }
 .title { font-weight:bold; font-size:1rem; color:#444; text-align:center; margin-bottom:5px; }
 .price-fixed { font-weight:bold; text-align:center; font-size:1.2rem; color:#006400; margin-bottom:5px; }
-.btn { text-align:center; padding:8px; border-radius:8px; font-weight:bold; text-decoration:none; display:block; margin-top:5px; background:#00BFFF; color:#fff; transition:0.3s; }
+.btn { text-align:center; padding:8px; border-radius:8px; font-weight:bold; text-decoration:none; display:block; margin-top:auto; background:#00BFFF; color:#fff; transition:0.3s; }
 .btn:hover { background:#009ACD; }
 
 #whatsapp-btn { position:fixed; bottom:20px; right:20px; background:#fff; color:#8B0000; font-weight:bold; font-size:0.9rem; padding:10px 14px; border-radius:50px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.2); z-index:1000; text-decoration:none; }
@@ -92,7 +92,7 @@ async function loadProducts(){
       const content=document.createElement("div"); content.className="card-content";
       const t=document.createElement("div"); t.className="title"; t.textContent=title;
       const pNew=document.createElement("div"); pNew.className="price-fixed"; pNew.textContent=priceAfter+" درهم";
-      const btn=document.createElement("a"); btn.className="btn"; btn.href=link; btn.target="_blank"; btn.textContent="اشترِ الآن";
+      const btn=document.createElement("a"); btn.className="btn"; btn.href=link; btn.target="_blank"; btn.textContent="تسوق بسهولة بالضغط هنا";
       content.appendChild(t); content.appendChild(pNew); content.appendChild(btn); card.appendChild(content);
       fragment.appendChild(card);
     });
