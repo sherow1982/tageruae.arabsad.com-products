@@ -45,6 +45,27 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
   background:#007bff; color:#fff; text-align:center; padding:6px; border-radius:6px; font-weight:bold; text-decoration:none; display:block; margin-top:5px; transition:0.2s;
 }
 .btn:hover, .btn-more:hover { background:#0056b3; }
+
+/* WhatsApp floating button */
+#whatsapp-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background:#25D366;
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+  z-index:1000;
+  transition:transform 0.2s;
+  cursor:pointer;
+}
+#whatsapp-btn:hover { transform: scale(1.1); }
+#whatsapp-btn svg { width:30px; height:30px; fill:#fff; }
+
 @media (max-width:768px){ .card img{max-height:200px;} .price-new{font-size:1.1rem;} }
 @media (max-width:480px){ .card img{max-height:150px;} .title{font-size:0.9rem;} .price-new{font-size:1rem;} }
 </style>
@@ -55,6 +76,11 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
 <div id="products">
   <p class="text-center text-gray-500">جاري تحميل المنتجات...</p>
 </div>
+
+<!-- WhatsApp Floating Button -->
+<a href="https://wa.me/201110760081" target="_blank" id="whatsapp-btn">
+  <svg viewBox="0 0 448 512"><path d="M380.9 97.1C339-8.4 229.2-20.5 153.3 31.2 109.8 60.3 79.8 105.2 72.1 154.7 64.3 204.1 79.6 252 109.1 293.1L84.3 424.7 214.7 399.9C256 414.3 302.7 408 342.9 381.5 404.2 345.1 432.3 278.2 424.6 212.2 417 146.1 386.5 91.3 380.9 97.1ZM224 272C190.1 272 160 241.9 160 208S190.1 144 224 144s64 30.1 64 64-30.1 64-64 64Z"/></svg>
+</a>
 
 <script>
 const FEED_URL = "https://api.easy-orders.net/api/v1/products/feed/437a38bb829245a3934e1d2fe153b417/channel/google";
