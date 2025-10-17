@@ -24,10 +24,12 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
   display:flex;
   flex-direction:column;
   height:100%;
+  overflow:hidden;
+  position:relative;
 }
 .card:hover {
-  transform: scale(1.05);
-  box-shadow:0 12px 25px rgba(0,0,0,0.2);
+  transform: translateY(-5px);
+  box-shadow:0 15px 30px rgba(0,0,0,0.2);
 }
 
 .card img {
@@ -40,7 +42,6 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
   opacity:0;
   transition: opacity 0.8s ease-in-out;
 }
-
 .card img.loaded { opacity:1; }
 
 .card-content {
@@ -49,13 +50,24 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
   flex-direction:column;
   justify-content:flex-start;
   flex-grow:1;
+  transition: transform 0.3s;
+}
+
+.card:hover .card-content {
+  transform: translateY(-5px);
 }
 
 .title { font-weight:bold; font-size:1rem; color:#444; text-align:center; margin-bottom:5px; }
-.description { font-size:0.9rem; color:#555; margin-bottom:5px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; }
-.price-new { color:green; font-weight:bold; text-align:center; font-size:1.2rem; margin-bottom:5px; }
 
-.btn, .btn-more {
+/* سعر نابض */
+@keyframes pulsePrice {
+  0% { transform: scale(1); color: #006400; }
+  50% { transform: scale(1.2); color: #8B0000; }
+  100% { transform: scale(1); color: #006400; }
+}
+.price-new { font-weight:bold; text-align:center; font-size:1.2rem; margin-bottom:5px; animation: pulsePrice 1s infinite; }
+
+.btn {
   text-align:center;
   padding:6px;
   border-radius:6px;
@@ -63,20 +75,11 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
   text-decoration:none;
   display:block;
   margin-top:5px;
-  transition:0.2s;
+  background: #00BFFF;
+  color:#fff;
+  transition:0.3s;
 }
-
-/* زر اشترِ الآن أزرق سماوي */
-.btn { 
-  background: #00BFFF; 
-  color: #fff; 
-}
-.btn:hover { 
-  background: #009ACD; 
-}
-
-.btn-more { color:green; font-weight:bold; font-style:italic; background:#e0f7ea; }
-.btn-more:hover { background:#c0f0d5; }
+.btn:hover { background:#009ACD; }
 
 /* WhatsApp floating button */
 #whatsapp-btn {
@@ -169,26 +172,6 @@ async function loadProducts() {
       t.className="title";
       t.textContent=title;
 
-      const d = document.createElement("div");
-      d.className="description";
-      d.textContent=desc;
-
-      const btnMore = document.createElement("a");
-      btnMore.className="btn-more";
-      btnMore.href="javascript:void(0)";
-      btnMore.textContent="عرض المزيد";
-      btnMore.addEventListener("click",()=>{
-        if(d.style.webkitLineClamp === "3" || !d.style.webkitLineClamp) {
-          d.style.display = "block";
-          d.style.webkitLineClamp = "unset";
-          btnMore.textContent="عرض أقل";
-        } else {
-          d.style.display = "-webkit-box";
-          d.style.webkitLineClamp = "3";
-          btnMore.textContent="عرض المزيد";
-        }
-      });
-
       const pNew = document.createElement("div");
       pNew.className="price-new";
       pNew.textContent=priceAfter + " درهم";
@@ -200,8 +183,6 @@ async function loadProducts() {
       btn.textContent="اشترِ الآن";
 
       content.appendChild(t);
-      content.appendChild(d);
-      content.appendChild(btnMore);
       content.appendChild(pNew);
       content.appendChild(btn);
 
