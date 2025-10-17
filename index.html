@@ -4,56 +4,38 @@
 <meta charset="UTF-8">
 <title>منتجات تاجر الإمارات</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="تصفح منتجات تاجر الإمارات بسرعة وسهولة. كل المنتجات محدثة مباشرة من EasyOrders.">
-<meta name="keywords" content="تاجر الإمارات, منتجات, EasyOrders, تسوق, درهم إماراتي">
-<meta name="robots" content="index, follow">
-
-<!-- Open Graph -->
-<meta property="og:title" content="منتجات تاجر الإمارات">
-<meta property="og:description" content="تصفح منتجات تاجر الإمارات مباشرة من EasyOrders">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://sherow1982.github.io/tageruae.arabsad.com/">
-<meta property="og:image" content="رابط_صورة_افتراضية_او_شعار.png">
-
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="منتجات تاجر الإمارات">
-<meta name="twitter:description" content="تصفح منتجات تاجر الإمارات مباشرة من EasyOrders">
-<meta name="twitter:image" content="رابط_صورة_افتراضية_او_شعار.png">
-
-<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
 <style>
-body { font-family: 'Tajawal', sans-serif; background-color: #f9fafb; margin:0; padding:0; }
+body { font-family:'Tajawal', sans-serif; background:#f9fafb; margin:0; padding:0; }
 h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
 
+#search-container { max-width:600px; margin:0 auto 20px auto; position:relative; }
+#search { width:100%; padding:12px 16px; font-size:1rem; font-weight:bold; border-radius:10px; border:2px solid #00BFFF; outline:none; }
+#search:focus { border-color:#1E40AF; }
+
+#search-results { position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid #ddd; max-height:250px; overflow-y:auto; border-radius:0 0 10px 10px; z-index:100; display:none; }
+#search-results a { display:block; padding:10px; text-decoration:none; color:#444; font-weight:bold; border-bottom:1px solid #eee; }
+#search-results a:hover { background:#00BFFF; color:#fff; }
+
 #products {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:20px;
+  padding:20px;
 }
 
-.card { background:#fff; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; display:flex; flex-direction:column; height:100%; overflow:hidden; position:relative; }
-.card:hover { transform: translateY(-5px); box-shadow:0 15px 30px rgba(0,0,0,0.2); }
-
-.card img { width:100%; height:auto; max-height:250px; object-fit:contain; border-radius:10px 10px 0 0; cursor:pointer; opacity:0; transition: opacity 0.8s ease-in-out; }
+.card { background:#fff; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); display:flex; flex-direction:column; height:100%; overflow:hidden; }
+.card img { width:100%; height:auto; max-height:250px; object-fit:contain; border-radius:10px 10px 0 0; cursor:pointer; opacity:0; transition:opacity 0.8s ease-in-out; }
 .card img.loaded { opacity:1; }
 
-.card-content { padding:10px; display:flex; flex-direction:column; justify-content:flex-start; flex-grow:1; transition: transform 0.3s; }
-.card:hover .card-content { transform: translateY(-5px); }
-
+.card-content { padding:10px; display:flex; flex-direction:column; justify-content:flex-start; flex-grow:1; }
 .title { font-weight:bold; font-size:1rem; color:#444; text-align:center; margin-bottom:5px; }
-
 .price-fixed { font-weight:bold; text-align:center; font-size:1.2rem; color:#006400; margin-bottom:5px; }
-
-.btn { text-align:center; padding:8px; border-radius:8px; font-weight:bold; text-decoration:none; display:block; margin-top:5px; background: #00BFFF; color:#fff; transition:0.3s; }
+.btn { text-align:center; padding:8px; border-radius:8px; font-weight:bold; text-decoration:none; display:block; margin-top:5px; background:#00BFFF; color:#fff; transition:0.3s; }
 .btn:hover { background:#009ACD; }
 
-/* WhatsApp floating button */
-#whatsapp-btn { position: fixed; bottom: 20px; right: 20px; background:#fff; color:#8B0000; font-weight:bold; font-size:0.9rem; padding:10px 14px; border-radius:50px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.2); z-index:1000; transition:transform 0.3s, box-shadow 0.3s; cursor:pointer; text-decoration:none; }
-#whatsapp-btn:hover { transform: scale(1.1); box-shadow:0 8px 20px rgba(0,0,0,0.3); }
+#whatsapp-btn { position:fixed; bottom:20px; right:20px; background:#fff; color:#8B0000; font-weight:bold; font-size:0.9rem; padding:10px 14px; border-radius:50px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.2); z-index:1000; text-decoration:none; }
+#whatsapp-btn:hover { transform:scale(1.1); box-shadow:0 8px 20px rgba(0,0,0,0.3); }
 #whatsapp-btn svg { width:20px; height:20px; fill:#25D366; margin-left:5px; }
 
 @media (max-width:768px){ .card img{max-height:200px;} .price-fixed{font-size:1.1rem;} }
@@ -63,9 +45,13 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
 <body>
 
 <h1>منتجات تاجر الإمارات</h1>
-<div id="products">
-  <p class="text-center text-gray-500">جاري تحميل المنتجات...</p>
+
+<div id="search-container">
+  <input type="text" id="search" placeholder="ابحث عن منتج...">
+  <div id="search-results"></div>
 </div>
+
+<div id="products"><p class="text-center text-gray-500">جاري تحميل المنتجات...</p></div>
 
 <a href="https://wa.me/201110760081" target="_blank" id="whatsapp-btn">
   راسلنا واتساب
@@ -74,8 +60,9 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
 
 <script>
 const FEED_URL="https://api.easy-orders.net/api/v1/products/feed/437a38bb829245a3934e1d2fe153b417/channel/google";
+let productsData=[];
 
-function cleanText(text){return text? text.replace(/[*•\-\u00A0]/g,"").trim() : "";}
+function cleanText(text){ return text? text.replace(/[*•\-\u00A0]/g,"").trim(): ""; }
 
 async function loadProducts(){
   try{
@@ -86,58 +73,31 @@ async function loadProducts(){
     const items=xml.querySelectorAll("item");
     const container=document.getElementById("products");
     container.innerHTML="";
-
     const fragment=document.createDocumentFragment();
-    const jsonLDProducts=[];
 
-    items.forEach((item,i)=>{
+    items.forEach(item=>{
       const title=cleanText(item.querySelector("title")?.textContent)||"منتج بدون اسم";
       const link=item.querySelector("link")?.textContent||"#";
       const image=item.querySelector("g\\:image_link, image_link")?.textContent||"";
       const priceAfter=parseFloat((item.querySelector("g\\:price, price")?.textContent||"0").replace(/[^\d.]/g,""))||0;
 
-      const card=document.createElement("div"); card.className="card";
+      productsData.push({title, link, image, priceAfter});
 
+      const card=document.createElement("div"); card.className="card";
       const aImg=document.createElement("a"); aImg.href=link; aImg.target="_blank";
       const img=document.createElement("img"); img.src=image; img.alt=title; img.loading="lazy";
       img.addEventListener('load',()=>img.classList.add('loaded'));
-      aImg.appendChild(img);
-      card.appendChild(aImg);
+      aImg.appendChild(img); card.appendChild(aImg);
 
       const content=document.createElement("div"); content.className="card-content";
       const t=document.createElement("div"); t.className="title"; t.textContent=title;
       const pNew=document.createElement("div"); pNew.className="price-fixed"; pNew.textContent=priceAfter+" درهم";
       const btn=document.createElement("a"); btn.className="btn"; btn.href=link; btn.target="_blank"; btn.textContent="اشترِ الآن";
-
-      content.appendChild(t); content.appendChild(pNew); content.appendChild(btn);
-      card.appendChild(content);
+      content.appendChild(t); content.appendChild(pNew); content.appendChild(btn); card.appendChild(content);
       fragment.appendChild(card);
-
-      jsonLDProducts.push({
-        "@type":"Product",
-        "name": title,
-        "image": image,
-        "offers":{
-          "@type":"Offer",
-          "priceCurrency":"AED",
-          "price": priceAfter,
-          "url": link,
-          "availability":"https://schema.org/InStock"
-        }
-      });
     });
 
     container.appendChild(fragment);
-
-    // JSON-LD SEO
-    const scriptLD=document.createElement("script");
-    scriptLD.type="application/ld+json";
-    scriptLD.text=JSON.stringify({
-      "@context":"https://schema.org",
-      "@type":"ItemList",
-      "itemListElement":jsonLDProducts.map((prod,i)=>({"@type":"ListItem","position":i+1,"item":prod}))
-    });
-    document.head.appendChild(scriptLD);
 
   }catch(err){
     console.error(err);
@@ -146,6 +106,33 @@ async function loadProducts(){
 }
 
 loadProducts();
+
+// بحث ديناميكي
+const searchInput=document.getElementById("search");
+const searchResults=document.getElementById("search-results");
+
+searchInput.addEventListener("input",()=>{
+  const val=searchInput.value.trim().toLowerCase();
+  searchResults.innerHTML="";
+  if(val.length<2){ searchResults.style.display="none"; return; }
+
+  const matched=productsData.filter(p=>p.title.toLowerCase().includes(val)).slice(0,10);
+  if(matched.length>0){
+    matched.forEach(p=>{
+      const a=document.createElement("a"); a.href=p.link; a.target="_blank"; a.textContent=p.title;
+      searchResults.appendChild(a);
+    });
+    searchResults.style.display="block";
+  }else{
+    searchResults.style.display="none";
+  }
+});
+
+document.addEventListener("click",(e)=>{
+  if(!searchInput.contains(e.target) && !searchResults.contains(e.target)){
+    searchResults.style.display="none";
+  }
+});
 </script>
 
 </body>
