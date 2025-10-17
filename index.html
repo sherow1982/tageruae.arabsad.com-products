@@ -119,6 +119,11 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
 <script>
 const FEED_URL = "https://api.easy-orders.net/api/v1/products/feed/437a38bb829245a3934e1d2fe153b417/channel/google";
 
+function cleanText(text) {
+  if (!text) return "";
+  return text.replace(/[*•\-\u00A0]/g,"").trim();
+}
+
 async function loadProducts() {
   try {
     const res = await fetch(FEED_URL);
@@ -130,11 +135,11 @@ async function loadProducts() {
     container.innerHTML = "";
 
     items.forEach(item=>{
-      const title = item.querySelector("title")?.textContent || "منتج بدون اسم";
+      const title = cleanText(item.querySelector("title")?.textContent) || "منتج بدون اسم";
       const link = item.querySelector("link")?.textContent || "#";
       const image = item.querySelector("g\\:image_link, image_link")?.textContent || "";
       const priceAfter = parseFloat((item.querySelector("g\\:price, price")?.textContent || "0").replace(/[^\d.]/g,"")) || 0;
-      const desc = item.querySelector("description")?.textContent || "";
+      const desc = cleanText(item.querySelector("description")?.textContent);
 
       const card = document.createElement("div");
       card.className = "card";
