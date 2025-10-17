@@ -38,7 +38,6 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
   flex-grow:1;
 }
 .title { font-weight:bold; font-size:1rem; color:#444; text-align:center; margin-bottom:5px; }
-.price-old { color:red; text-decoration:line-through; text-align:center; font-size:0.9rem; }
 .price-new { color:green; font-weight:bold; text-align:center; font-size:1.2rem; margin-bottom:5px; }
 .btn {
   background:#007bff;
@@ -53,7 +52,7 @@ h1 { text-align:center; font-size:2rem; color:#1D4ED8; margin:20px 0; }
   transition:0.2s;
 }
 .btn:hover { background:#0056b3; }
-@media (max-width:768px){ .card img{height:180px;} }
+@media (max-width:768px){ .card img{height:180px;} .price-new{font-size:1.1rem;} }
 @media (max-width:480px){ .card img{height:150px;} .title{font-size:0.9rem;} .price-new{font-size:1rem;} }
 </style>
 </head>
@@ -81,8 +80,7 @@ async function loadProducts() {
       const title = item.querySelector("title")?.textContent || "منتج بدون اسم";
       const link = item.querySelector("link")?.textContent || "#";
       const image = item.querySelector("g\\:image_link, image_link")?.textContent || "";
-      const priceBefore = parseFloat((item.querySelector("g\\:sale_price, g\\:price, price")?.textContent || "0").replace(/[^\d.]/g,"")) || 0;
-      const priceAfter = parseFloat((item.querySelector("g\\:price, price")?.textContent || "0").replace(/[^\d.]/g,"")) || priceBefore;
+      const priceAfter = parseFloat((item.querySelector("g\\:price, price")?.textContent || "0").replace(/[^\d.]/g,"")) || 0;
 
       const card = document.createElement("div");
       card.className = "card";
@@ -104,10 +102,6 @@ async function loadProducts() {
       t.className="title";
       t.textContent=title;
 
-      const pOld = document.createElement("div");
-      pOld.className="price-old";
-      pOld.textContent=priceBefore + " درهم";
-
       const pNew = document.createElement("div");
       pNew.className="price-new";
       pNew.textContent=priceAfter + " درهم";
@@ -119,7 +113,6 @@ async function loadProducts() {
       btn.textContent="اشترِ الآن";
 
       content.appendChild(t);
-      content.appendChild(pOld);
       content.appendChild(pNew);
       content.appendChild(btn);
 
