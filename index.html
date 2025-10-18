@@ -27,66 +27,82 @@ body {font-family:'Tajawal',sans-serif;background:#f9fafb;margin:0;padding:0;}
 
 <script>
 const FEED_URL="https://api.easy-orders.net/api/v1/products/feed/437a38bb829245a3934e1d2fe153b417/channel/google";
-let productsData=[];
+const OLD_DOMAIN = "https://tageruae.arabsad.com/";
+const NEW_DOMAIN = "https://tageruae.myeasyorders.com/";
 
-async function loadProducts(){
-  const container=document.getElementById('products');
-  container.innerHTML='<p class="loading-msg">Loading...</p>';
-  try{
-    const res=await fetch(FEED_URL);
-    const text=await res.text();
-    const parser=new DOMParser();
-    const xml=parser.parseFromString(text,"application/xml");
-    const items=xml.querySelectorAll("item");
-    productsData=[];
-    container.innerHTML="";
-    items.forEach(item=>{
-      const title=item.querySelector("title")?.textContent||"منتج بدون اسم";
-      const link=item.querySelector("link")?.textContent||"#";
-      const image=item.querySelector("g\\:image_link, image_link")?.textContent||"";
-      const price=parseFloat((item.querySelector("g\\:price, price")?.textContent||"0").replace(/[^\d.]/g,""))||0;
-      productsData.push({title,link,image,price});
-      container.innerHTML+=`
-      <div class="card bg-white p-4 rounded-xl shadow">
-        <a href="${link}" target="_blank">
-          <img src="${image}" alt="${title}" loading="lazy" class="product-image rounded-lg mb-3">
-        </a>
-        <h2 class="text-base sm:text-lg font-semibold mb-1">${title}</h2>
-        <span style="font-weight:bold;color:#006400;font-size:1.2rem;">${price} د.إ</span>
-        <a href="${link}" target="_blank" class="shop-btn">تسوق الآن</a>
-        <div class="badge">شحن داخل الإمارات</div>
-      </div>`;
-    });
-  }catch(err){
-    console.error(err);
-    container.innerHTML='<p class="text-center text-red-500 font-bold">حدث خطأ في تحميل المنتجات. قد يكون سبب ذلك قيود CORS.</p>';
-  }
+let productsData = [];
+
+async function loadProducts() {
+    const container = document.getElementById('products');
+    container.innerHTML = '<p class="loading-msg">Loading...</p>';
+    try {
+        const res = await fetch(FEED_URL);
+        const text = await res.text();
+
+        // استبدال الدومين مباشرة
+        const updatedText = text.replaceAll(OLD_DOMAIN, NEW_DOMAIN);
+
+        // استخراج البيانات بسرعة بدون DOMParser ثقيل
+        const urlRegex = /<link>(.*?)<\/link>/g;
+        const imgRegex = /<g:image_link>(.*?)<\/g:image_link>/g;
+        const titleRegex = /<title>(.*?)<\/title>/g;
+        const priceRegex = /<g:price>(.*?)<\/g:price>/g;
+
+        const titles = Array.from(updatedText.matchAll(titleRegex), m => m[1]);
+        const links = Array.from(updatedText.matchAll(urlRegex), m => m[1]);
+        const images = Array.from(updatedText.matchAll(imgRegex), m => m[1]);
+        const prices = Array.from(updatedText.matchAll(priceRegex), m => m[1]);
+
+        productsData = [];
+        container.innerHTML = "";
+
+        for(let i=0; i<titles.length; i++){
+            const price = parseFloat((prices[i] || "0").replace(/[^\d.]/g,"")) || 0;
+            productsData.push({
+                title: titles[i],
+                link: links[i] || '#',
+                image: images[i] || '',
+                price: price
+            });
+        }
+
+        displayProducts(productsData);
+
+    } catch(err) {
+        console.error(err);
+        container.innerHTML = '<p class="text-center text-red-500 font-bold">حدث خطأ في تحميل المنتجات. قد يكون سبب ذلك قيود CORS.</p>';
+    }
 }
 
-loadProducts();
+function displayProducts(products){
+    const container = document.getElementById('products');
+    container.innerHTML = "";
+    if(products.length === 0){
+        container.innerHTML = '<p class="text-center text-gray-500">لا توجد منتجات مطابقة.</p>';
+        return;
+    }
+    products.forEach(prod => {
+        container.innerHTML += `
+        <div class="card bg-white p-4 rounded-xl shadow">
+            <a href="${prod.link}" target="_blank">
+                <img src="${prod.image}" alt="${prod.title}" loading="lazy" class="product-image rounded-lg mb-3">
+            </a>
+            <h2 class="text-base sm:text-lg font-semibold mb-1">${prod.title}</h2>
+            <span style="font-weight:bold;color:#006400;font-size:1.2rem;">${prod.price} د.إ</span>
+            <a href="${prod.link}" target="_blank" class="shop-btn">تسوق الآن</a>
+            <div class="badge">شحن داخل الإمارات</div>
+        </div>`;
+    });
+}
 
-document.getElementById('search').addEventListener('input',function(){
-  const val=this.value.toLowerCase();
-  const filtered=productsData.filter(p=>p.title.toLowerCase().includes(val));
-  const container=document.getElementById('products');
-  container.innerHTML="";
-  if(filtered.length===0){
-    container.innerHTML='<p class="text-center text-gray-500">لا توجد منتجات مطابقة.</p>';
-    return;
-  }
-  filtered.forEach(prod=>{
-    container.innerHTML+=`
-    <div class="card bg-white p-4 rounded-xl shadow">
-      <a href="${prod.link}" target="_blank">
-        <img src="${prod.image}" alt="${prod.title}" loading="lazy" class="product-image rounded-lg mb-3">
-      </a>
-      <h2 class="text-base sm:text-lg font-semibold mb-1">${prod.title}</h2>
-      <span style="font-weight:bold;color:#006400;font-size:1.2rem;">${prod.price} د.إ</span>
-      <a href="${prod.link}" target="_blank" class="shop-btn">تسوق الآن</a>
-      <div class="badge">شحن داخل الإمارات</div>
-    </div>`;
-  });
+// فلترة البحث
+document.getElementById('search').addEventListener('input', function(){
+    const val = this.value.toLowerCase();
+    const filtered = productsData.filter(p => p.title.toLowerCase().includes(val));
+    displayProducts(filtered);
 });
+
+loadProducts();
 </script>
 
 <a href="https://wa.me/201110760081" target="_blank" style="position:fixed;bottom:20px;right:20px;background:#25D366;color:#fff;padding:12px 20px;font-weight:bold;border-radius:50px;z-index:9999;text-align:center;text-decoration:none;box-shadow:0 4px 10px rgba(0,0,0,0.2)">
