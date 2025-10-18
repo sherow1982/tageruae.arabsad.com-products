@@ -57,6 +57,7 @@ async function loadProducts(){
   const container=document.getElementById('products');
   try{
     const res=await fetch(FEED_URL);
+    if(!res.ok) throw new Error("فشل تحميل البيانات");
     const text=await res.text();
     const parser=new DOMParser();
     const xml=parser.parseFromString(text,"application/xml");
