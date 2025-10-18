@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>منتجات تاجر الإمارات</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="تصفح منتجات تاجر الإمارات مع شحن داخل الإمارات.">
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <style>
 body {font-family:'Tajawal',sans-serif;background:#f9fafb;margin:0;padding:0;}
@@ -17,31 +16,8 @@ body {font-family:'Tajawal',sans-serif;background:#f9fafb;margin:0;padding:0;}
 .loading-msg {text-align:center;color:#555;font-weight:bold;font-size:1rem;margin-top:50px;}
 #search {width:100%;padding:10px;border-radius:6px;border:1px solid #ccc;margin-bottom:20px;font-weight:bold;}
 </style>
-
-<!-- Google Tag Manager -->
-<script>
-(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PGQ56ZQZ');
-</script>
-<!-- End Google Tag Manager -->
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MR5ZR9ZQNC"></script>
-<script>
-window.dataLayer=window.dataLayer||[];
-function gtag(){dataLayer.push(arguments);}
-gtag('js',new Date());
-gtag('config','G-MR5ZR9ZQNC');
-</script>
 </head>
-
 <body class="p-4">
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PGQ56ZQZ"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 
 <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-center text-blue-700">منتجات تاجر الإمارات</h1>
 
@@ -50,14 +26,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div id="products"><p class="loading-msg">Loading...</p></div>
 
 <script>
-const FEED_URL="https://flat-limit-5d8f.sherow1982.workers.dev";
+const FEED_URL="https://api.easy-orders.net/api/v1/products/feed/437a38bb829245a3934e1d2fe153b417/channel/google";
 let productsData=[];
 
 async function loadProducts(){
   const container=document.getElementById('products');
+  container.innerHTML='<p class="loading-msg">Loading...</p>';
   try{
     const res=await fetch(FEED_URL);
-    if(!res.ok) throw new Error("فشل تحميل البيانات");
     const text=await res.text();
     const parser=new DOMParser();
     const xml=parser.parseFromString(text,"application/xml");
@@ -83,7 +59,7 @@ async function loadProducts(){
     });
   }catch(err){
     console.error(err);
-    container.innerHTML='<p class="text-center text-red-500 font-bold">حدث خطأ في تحميل المنتجات.</p>';
+    container.innerHTML='<p class="text-center text-red-500 font-bold">حدث خطأ في تحميل المنتجات. قد يكون سبب ذلك قيود CORS.</p>';
   }
 }
 
