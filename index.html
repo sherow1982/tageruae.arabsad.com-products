@@ -42,29 +42,19 @@ async function loadProducts() {
         // استبدال الدومين مباشرة
         const updatedText = text.replaceAll(OLD_DOMAIN, NEW_DOMAIN);
 
-        // استخراج البيانات بسرعة بدون DOMParser ثقيل
-        const urlRegex = /<link>(.*?)<\/link>/g;
-        const imgRegex = /<g:image_link>(.*?)<\/g:image_link>/g;
-        const titleRegex = /<title>(.*?)<\/title>/g;
-        const priceRegex = /<g:price>(.*?)<\/g:price>/g;
+        // استخلاص سريع لكل البيانات بدون DOMParser
+        const parseTag = (regex) => Array.from(updatedText.matchAll(regex), m => m[1] || '');
+        const titles = parseTag(/<title>(.*?)<\/title>/g);
+        const links  = parseTag(/<link>(.*?)<\/link>/g);
+        const images = parseTag(/<g:image_link>(.*?)<\/g:image_link>/g);
+        const prices = parseTag(/<g:price>(.*?)<\/g:price>/g);
 
-        const titles = Array.from(updatedText.matchAll(titleRegex), m => m[1]);
-        const links = Array.from(updatedText.matchAll(urlRegex), m => m[1]);
-        const images = Array.from(updatedText.matchAll(imgRegex), m => m[1]);
-        const prices = Array.from(updatedText.matchAll(priceRegex), m => m[1]);
-
-        productsData = [];
-        container.innerHTML = "";
-
-        for(let i=0; i<titles.length; i++){
-            const price = parseFloat((prices[i] || "0").replace(/[^\d.]/g,"")) || 0;
-            productsData.push({
-                title: titles[i],
-                link: links[i] || '#',
-                image: images[i] || '',
-                price: price
-            });
-        }
+        productsData = titles.map((title,i) => ({
+            title,
+            link: links[i] || '#',
+            image: images[i] || '',
+            price: parseFloat((prices[i] || "0").replace(/[^\d.]/g,"")) || 0
+        }));
 
         displayProducts(productsData);
 
@@ -95,11 +85,10 @@ function displayProducts(products){
     });
 }
 
-// فلترة البحث
+// فلترة البحث مباشرة
 document.getElementById('search').addEventListener('input', function(){
     const val = this.value.toLowerCase();
-    const filtered = productsData.filter(p => p.title.toLowerCase().includes(val));
-    displayProducts(filtered);
+    displayProducts(productsData.filter(p => p.title.toLowerCase().includes(val)));
 });
 
 loadProducts();
