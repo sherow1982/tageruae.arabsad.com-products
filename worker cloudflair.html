@@ -1,0 +1,20 @@
+addEventListener('fetch', event => {
+  event.respondWith(handleRequest(event.request))
+})
+
+async function handleRequest(request) {
+  // رابط الفييد الأصلي
+  const feedURL = 'https://api.easy-orders.net/api/v1/products/feed/437a38bb829245a3934e1d2fe153b417/channel/google'
+
+  // جلب الفييد
+  const response = await fetch(feedURL)
+
+  // نسخ headers وإضافة CORS
+  const newHeaders = new Headers(response.headers)
+  newHeaders.set('Access-Control-Allow-Origin', '*')
+  newHeaders.set('Access-Control-Allow-Methods', 'GET,OPTIONS')
+  newHeaders.set('Access-Control-Allow-Headers', '*')
+
+  const body = await response.text()
+  return new Response(body, { status: 200, headers: newHeaders })
+}
