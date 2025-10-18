@@ -7,40 +7,50 @@
 <meta name="description" content="تصفح منتجات تاجر الإمارات مع شحن داخل الإمارات.">
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <style>
-body{font-family:'Tajawal',sans-serif;background:#f9fafb;margin:0;padding:0}
-.card{transition:all .2s ease-in-out;text-align:center}
-.card:hover{transform:scale(1.03);box-shadow:0 8px 20px rgba(0,0,0,.1)}
-.shop-btn{font-weight:bold;padding:10px;border-radius:8px;display:block;margin:10px auto;cursor:pointer;background:#00bfff;color:#fff;text-decoration:none;text-align:center;width:90%}
-.product-image{width:100%;height:auto;object-fit:contain;cursor:pointer}
-#products{padding-bottom:140px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
-.badge{background:#FFD700;color:#000;font-weight:bold;padding:3px 6px;margin-top:5px;display:inline-block;border-radius:4px;font-size:.85rem}
-.loading-msg{text-align:center;color:#555;font-weight:bold;font-size:1rem;margin-top:50px}
-#search{width:100%;padding:10px;border-radius:6px;border:1px solid #ccc;margin-bottom:20px;font-weight:bold}
+body {font-family:'Tajawal',sans-serif;background:#f9fafb;margin:0;padding:0;}
+.card {transition:all .2s ease-in-out;text-align:center;}
+.card:hover {transform:scale(1.03);box-shadow:0 8px 20px rgba(0,0,0,.1);}
+.shop-btn {font-weight:bold;padding:10px;border-radius:8px;display:block;margin:10px auto;cursor:pointer;background:#00bfff;color:#fff;text-decoration:none;text-align:center;width:90%;}
+.product-image {width:100%;height:auto;object-fit:contain;cursor:pointer;}
+#products {padding-bottom:140px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;}
+.badge {background:#FFD700;color:#000;font-weight:bold;padding:3px 6px;margin-top:5px;display:inline-block;border-radius:4px;font-size:.85rem;}
+.loading-msg {text-align:center;color:#555;font-weight:bold;font-size:1rem;margin-top:50px;}
+#search {width:100%;padding:10px;border-radius:6px;border:1px solid #ccc;margin-bottom:20px;font-weight:bold;}
 </style>
+
 <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PGQ56ZQZ');</script>
+<script>
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PGQ56ZQZ');
+</script>
 <!-- End Google Tag Manager -->
+
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-MR5ZR9ZQNC"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-MR5ZR9ZQNC');
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-MR5ZR9ZQNC');
 </script>
 </head>
+
 <body class="p-4">
 <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PGQ56ZQZ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PGQ56ZQZ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
-<h1 class="text-2xl sm:text-3xl font-bold mb-6 text-center text-blue-700">منتجات إماراتية 100%</h1>
+<h1 class="text-2xl sm:text-3xl font-bold mb-6 text-center text-blue-700">منتجات تاجر الإمارات</h1>
+
 <input type="text" id="search" placeholder="ابحث عن منتج...">
+
 <div id="products"><p class="loading-msg">Loading...</p></div>
 
 <script>
-const FEED_URL = "https://your-worker-name.your-subdomain.workers.dev"; // رابط Worker
-
+const FEED_URL="https://flat-limit-5d8f.sherow1982.workers.dev";
 let productsData=[];
 
 async function loadProducts(){
@@ -59,14 +69,16 @@ async function loadProducts(){
       const image=item.querySelector("g\\:image_link, image_link")?.textContent||"";
       const price=parseFloat((item.querySelector("g\\:price, price")?.textContent||"0").replace(/[^\d.]/g,""))||0;
       productsData.push({title,link,image,price});
-      container.innerHTML+=
-        `<div class="card bg-white p-4 rounded-xl shadow">
-          <a href="${link}" target="_blank"><img src="${image}" alt="${title}" loading="lazy" class="product-image rounded-lg mb-3"></a>
-          <h2 class="text-base sm:text-lg font-semibold mb-1">${title}</h2>
-          <span style="font-weight:bold;color:#006400;font-size:1.2rem;">${price} د.إ</span>
-          <a href="${link}" target="_blank" class="shop-btn">تسوق بسهولة بالضغط هنا</a>
-          <div class="badge">شحن داخل الإمارات</div>
-        </div>`;
+      container.innerHTML+=`
+      <div class="card bg-white p-4 rounded-xl shadow">
+        <a href="${link}" target="_blank">
+          <img src="${image}" alt="${title}" loading="lazy" class="product-image rounded-lg mb-3">
+        </a>
+        <h2 class="text-base sm:text-lg font-semibold mb-1">${title}</h2>
+        <span style="font-weight:bold;color:#006400;font-size:1.2rem;">${price} د.إ</span>
+        <a href="${link}" target="_blank" class="shop-btn">تسوق بسهولة بالضغط هنا</a>
+        <div class="badge">شحن داخل الإمارات</div>
+      </div>`;
     });
   }catch(err){
     console.error(err);
@@ -81,20 +93,27 @@ document.getElementById('search').addEventListener('input',function(){
   const filtered=productsData.filter(p=>p.title.toLowerCase().includes(val));
   const container=document.getElementById('products');
   container.innerHTML="";
-  if(filtered.length===0){container.innerHTML='<p class="text-center text-gray-500">لا توجد منتجات مطابقة.</p>';return;}
+  if(filtered.length===0){
+    container.innerHTML='<p class="text-center text-gray-500">لا توجد منتجات مطابقة.</p>';
+    return;
+  }
   filtered.forEach(prod=>{
-    container.innerHTML+=
-      `<div class="card bg-white p-4 rounded-xl shadow">
-        <a href="${prod.link}" target="_blank"><img src="${prod.image}" alt="${prod.title}" loading="lazy" class="product-image rounded-lg mb-3"></a>
-        <h2 class="text-base sm:text-lg font-semibold mb-1">${prod.title}</h2>
-        <span style="font-weight:bold;color:#006400;font-size:1.2rem;">${prod.price} د.إ</span>
-        <a href="${prod.link}" target="_blank" class="shop-btn">تسوق بسهولة بالضغط هنا</a>
-        <div class="badge">شحن داخل الإمارات</div>
-      </div>`;
+    container.innerHTML+=`
+    <div class="card bg-white p-4 rounded-xl shadow">
+      <a href="${prod.link}" target="_blank">
+        <img src="${prod.image}" alt="${prod.title}" loading="lazy" class="product-image rounded-lg mb-3">
+      </a>
+      <h2 class="text-base sm:text-lg font-semibold mb-1">${prod.title}</h2>
+      <span style="font-weight:bold;color:#006400;font-size:1.2rem;">${prod.price} د.إ</span>
+      <a href="${prod.link}" target="_blank" class="shop-btn">تسوق بسهولة بالضغط هنا</a>
+      <div class="badge">شحن داخل الإمارات</div>
+    </div>`;
   });
 });
 </script>
 
-<a href="https://wa.me/201110760081" target="_blank" style="position:fixed;bottom:20px;right:20px;background:#25D366;color:#fff;padding:12px 20px;font-weight:bold;border-radius:50px;z-index:9999;text-align:center;text-decoration:none;box-shadow:0 4px 10px rgba(0,0,0,0.2)">راسلنا واتساب</a>
+<a href="https://wa.me/201110760081" target="_blank" style="position:fixed;bottom:20px;right:20px;background:#25D366;color:#fff;padding:12px 20px;font-weight:bold;border-radius:50px;z-index:9999;text-align:center;text-decoration:none;box-shadow:0 4px 10px rgba(0,0,0,0.2)">
+راسلنا واتساب
+</a>
 </body>
 </html>
