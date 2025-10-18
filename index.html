@@ -13,7 +13,7 @@ body{font-family:'Tajawal',sans-serif;background:#f9fafb;margin:0;padding:0}
 .product-image{width:100%;height:180px;object-fit:contain;cursor:pointer}
 .shop-btn{font-weight:bold;padding:.5rem;border-radius:.5rem;display:block;margin:.3rem auto 0;cursor:pointer;background:#00bfff;color:#fff;text-decoration:none;text-align:center;width:90%;height:36px;line-height:36px}
 .badge{background:#FFD700;color:#000;font-weight:bold;padding:.15rem .4rem;margin-top:.3rem;display:inline-block;border-radius:.25rem;font-size:.75rem}
-.loading-msg{text-align:center;color:#555;font-weight:bold;font-size:.95rem;margin-top:40px}
+.loading-msg{text-align:center;color:#555;font-weight:bold;font-size:1rem;margin-top:40px}
 </style>
 </head>
 <body class="p-3">
@@ -27,13 +27,13 @@ const OLD_DOMAIN="https://tageruae.arabsad.com/";
 const NEW_DOMAIN="https://tageruae.myeasyorders.com/";
 const FEED_URL="https://api.easy-orders.net/api/v1/products/feed/437a38bb829245a3934e1d2fe153b417/channel/json";
 const ITEMS_PER_LOAD=10;
+
 let productsData=[], filteredData=[], currentIndex=0;
 
-// Proxy مضمون من AllOrigins
+// جلب الفييد مباشرة من Easy Orders
 async function fetchFeed(){
-    const proxy="https://api.allorigins.win/raw?url=";
-    const url=proxy + encodeURIComponent(FEED_URL);
-    const res = await fetch(url);
+    const res=await fetch(FEED_URL);
+    if(!res.ok) throw new Error("Failed to fetch feed");
     return await res.json();
 }
 
@@ -45,10 +45,10 @@ async function loadProducts(){
     try{
         const data=await fetchFeed();
         productsData=data.map(p=>({
-            title: decodeText(p.title),
-            link: p.link.replace(OLD_DOMAIN, NEW_DOMAIN),
-            image: p.image.replace(/\.(jpg|png|jpeg)$/i,".webp"),
-            price: parseFloat(p.price||0)
+            title:decodeText(p.title),
+            link:p.link.replace(OLD_DOMAIN,NEW_DOMAIN),
+            image:p.image.replace(/\.(jpg|png|jpeg)$/i,".webp"),
+            price:parseFloat(p.price||0)
         }));
         filteredData=[...productsData]; currentIndex=0; container.innerHTML="";
         loadMoreItems();
